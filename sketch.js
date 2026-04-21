@@ -16,7 +16,7 @@ let ballMode      = true;
 let blobMode      = true;
 let multiplyCount = 1;
 
-// All stem data — color, shape, size, wobble, audio, slider, movement
+// All stem data
 let stems = [
   { col: [220, 170,  20], points: 4,  sizeMult: 1.0,  wobbleFreqs: [1, 2, 7],  wobbleAmps: [0.8, 0.3, 0.15], label: "OTHER"  },
   { col: [255, 120,  80], points: 6,  sizeMult: 1.0,  wobbleFreqs: [3, 5, 9],  wobbleAmps: [0.5, 0.4, 0.2],  label: "DRUMS"  },
@@ -85,9 +85,9 @@ function positionSliders() {
 function draw() {
   background(8, 5, 15, 40);
 
-  let cx     = width / 2;
-  let cy     = (height - barHeight) / 2;
-  let radius = min(width, height - barHeight) * 0.42;
+  let cx       = width / 2;
+  let cy       = (height - barHeight) / 2;
+  let radius   = min(width, height - barHeight) * 0.42;
 
   if (timer > 0) {
     for (let s of stems) s.sound.setVolume(s.vol.value());
@@ -103,14 +103,14 @@ function draw() {
     }
 
     for (let stemIndex = 0; stemIndex < stems.length; stemIndex++) {
-      let s     = stems[stemIndex];
-      let level = s.amp.getLevel() * s.vol.value();
+      let s        = stems[stemIndex];
+      let level    = s.amp.getLevel() * s.vol.value();
 
       for (let copy = 0; copy < multiplyCount; copy++) {
-        let rangeX = ballMode ? radius * 0.65 : width  * 0.46;
-        let rangeY = ballMode ? radius * 0.55 : height * 0.44;
-        let x      = cx + sin(timer * s.rx[copy] + s.rs[copy])              * rangeX;
-        let y      = cy + cos(timer * s.ry[copy] + s.rs[copy] * 1.7 + 1.3) * rangeY;
+        let rangeX   = ballMode ? radius * 0.65 : width  * 0.46;
+        let rangeY   = ballMode ? radius * 0.55 : height * 0.44;
+        let x        = cx + sin(timer * s.rx[copy] + s.rs[copy])              * rangeX;
+        let y        = cy + cos(timer * s.ry[copy] + s.rs[copy] * 1.7 + 1.3) * rangeY;
         let blobSize = (ballMode ? radius : min(width, height) * 0.4) * s.sizeMult * sizeControl;
 
         if (blobMode) drawBlob(x, y, blobSize, s.col, s.vol.value(), s.points, s.wobbleFreqs, s.wobbleAmps, pulseControl, level);
@@ -137,16 +137,16 @@ function draw() {
 }
 
 // Organic blob with unique wobble per stem
-function drawBlob(x, y, size, col, volumeFade, numPoints, wobbleFreqs, wobbleAmps, pulseControl, level) {
+function drawBlob(x, y, blobSize, col, volumeFade, numPoints, wobbleFreqs, wobbleAmps, pulseControl, level) {
   noStroke();
-  let pulseSize = size * (1 + level * pulseControl * 1.5);
+  let pulseSize = blobSize * (1 + level * pulseControl * 1.5);
   for (let layer = 0; layer < 8; layer++) {
     let layerSize  = pulseSize * map(layer, 0, 7, 2.2, 0.3);
     let layerAlpha = map(layer, 0, 7, 10, 180) * volumeFade;
     let speed      = map(layer, 0, 7, 0.3, 2.5);
     let rotate     = timer * 0.1 * (layer % 2 === 0 ? 1 : -1) + layer * 0.4;
-    let offsetX    = cos(timer * 0.3 + layer * 0.8) * size * 0.1;
-    let offsetY    = sin(timer * 0.25 + layer * 0.6) * size * 0.1;
+    let offsetX    = cos(timer * 0.3 + layer * 0.8) * blobSize * 0.1;
+    let offsetY    = sin(timer * 0.25 + layer * 0.6) * blobSize * 0.1;
 
     fill(col[0], col[1], col[2], layerAlpha);
     beginShape();
@@ -164,9 +164,9 @@ function drawBlob(x, y, size, col, volumeFade, numPoints, wobbleFreqs, wobbleAmp
 }
 
 // Fuzzy layered circle
-function drawCircle(x, y, size, col, volumeFade, pulseControl, level) {
+function drawCircle(x, y, blobSize, col, volumeFade, pulseControl, level) {
   noStroke();
-  let pulseSize = size * (1 + level * pulseControl * 1.5);
+  let pulseSize = blobSize * (1 + level * pulseControl * 1.5);
   for (let layer = 0; layer < 8; layer++) {
     fill(col[0], col[1], col[2], map(layer, 0, 7, 10, 180) * volumeFade);
     ellipse(x, y, pulseSize * map(layer, 0, 7, 2.2, 0.3));
@@ -226,7 +226,6 @@ function drawPlayerBar() {
   fill(140, 130, 160); textSize(15);
   text("Ben Böhmer", 20, barMiddleY + 12);
 
-  // Draw slider labels and tracks for each stem
   for (let stemIndex = 0; stemIndex < stems.length; stemIndex++) {
     let s   = stems[stemIndex];
     let sx  = spacing * (stemIndex + 1);
@@ -244,14 +243,13 @@ function drawPlayerBar() {
     ellipse(sx - sliderWidth / 2 + val * sliderWidth, sliderY, 12, 12);
   }
 
-  // Glowing play/pause button
   let isHovering = dist(mouseX, mouseY, buttonX, buttonY) < buttonR;
-  let pulse      = sin(timer * 4) * 3;
+  let puls       = sin(timer * 4) * 3;
   noFill();
   for (let g = 5; g >= 0; g--) {
     stroke(200, 80, 255, map(g, 5, 0, 3, 30));
     strokeWeight(map(g, 5, 0, 1, 4));
-    ellipse(buttonX, buttonY, buttonR * 2 + g * 8 + pulse);
+    ellipse(buttonX, buttonY, buttonR * 2 + g * 8 + puls);
   }
   stroke(200, 80, 255, isHovering ? 255 : 180); strokeWeight(2);
   noFill(); ellipse(buttonX, buttonY, buttonR * 2);
