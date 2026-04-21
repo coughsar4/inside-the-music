@@ -111,10 +111,10 @@ function draw() {
         let rangeY = ballMode ? radius * 0.55 : height * 0.44;
         let x      = cx + sin(timer * s.rx[copy] + s.rs[copy])              * rangeX;
         let y      = cy + cos(timer * s.ry[copy] + s.rs[copy] * 1.7 + 1.3) * rangeY;
-        let size   = (ballMode ? radius : min(width, height) * 0.4) * s.sizeMult * sizeControl;
+        let blobSize = (ballMode ? radius : min(width, height) * 0.4) * s.sizeMult * sizeControl;
 
-        if (blobMode) drawBlob(x, y, size, s.col, s.vol.value(), s.points, s.wobbleFreqs, s.wobbleAmps, pulseControl, level);
-        else          drawCircle(x, y, size, s.col, s.vol.value(), pulseControl, level);
+        if (blobMode) drawBlob(x, y, blobSize, s.col, s.vol.value(), s.points, s.wobbleFreqs, s.wobbleAmps, pulseControl, level);
+        else          drawCircle(x, y, blobSize, s.col, s.vol.value(), pulseControl, level);
       }
     }
 
