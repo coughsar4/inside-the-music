@@ -32,10 +32,10 @@ let buttons = [
 ];
 
 function preload() {
-  stems[0].sound = loadSound('other.mp3');
-  stems[1].sound = loadSound('drums.mp3');
-  stems[2].sound = loadSound('bass.mp3');
-  stems[3].sound = loadSound('vocals.mp3');
+  stems[0].sound = loadSound('assets/other.mp3');
+  stems[1].sound = loadSound('assets/drums.mp3');
+  stems[2].sound = loadSound('assets/bass.mp3');
+  stems[3].sound = loadSound('assets/vocals.mp3');
 }
 
 function setup() {
